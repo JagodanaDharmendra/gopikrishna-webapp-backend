@@ -1,5 +1,9 @@
-var mongoose = require('mongoose');
-mongoose.connect(process.env.MONGO, { useNewUrlParser: true, });
+const mongoose = require('mongoose');
+const { config } = require('./config');
+
+// console.log(config.config);
+mongoose.connect(config.DB_URL, { useNewUrlParser: true, });
+
 var conn = mongoose.connection;
 conn.on('connected', function () {
     console.log('database is connected successfully');

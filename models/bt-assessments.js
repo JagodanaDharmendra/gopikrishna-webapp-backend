@@ -2,9 +2,16 @@ const mongoose = require("mongoose");
 
 const schema = new mongoose.Schema(
     {
+        assessmentType: {
+            type: mongoose.Schema.Types.String,
+            default: "BT",
+        },
         client_id: {
-            type: mongoose.Schema.Types.Number,
-            default: 0,
+            type: mongoose.Schema.Types.String,
+            trim: true,
+            unique: true,
+            required: true,
+            dropDups: true
         },
         therapist: {
             type: mongoose.Schema.Types.String,
@@ -73,6 +80,10 @@ const schema = new mongoose.Schema(
         version: {
             type: mongoose.Schema.Types.Number,
             default: 0,
+        },
+        draft: {
+            type: mongoose.Schema.Types.Boolean,
+            default: true,
         },
     },
 );

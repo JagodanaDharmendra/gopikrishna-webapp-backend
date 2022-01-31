@@ -9,8 +9,22 @@ const defaultResponseObject = {
 };
 
 const find = async (req, res) => {
-    console.log(req);
-    res.json({ success: true });
+    try {
+        console.log(req.query);
+        const { client_id } = req.query;
+        const result = await Client.find({ client_id: client_id });
+        console.log(result);
+        let response = { ...defaultResponseObject };
+        response.message = "Client fetched successfully";
+        response.data = { ...result[0]._doc };
+        res.status(200).send(response);
+    } catch (e) {
+        console.log(e);
+        let response = { ...defaultResponseObject };
+        response.error = e.message || e;
+        response.success = false;
+        res.status(400).send(response);
+    }
 }
 
 const findAll = async (req, res) => {
@@ -35,13 +49,9 @@ const findAll = async (req, res) => {
 const create = async (req, res) => {
     try {
         console.log(req.body);
-        const { name, mobile_no, email, assessment } = req.body;
         const client = new Client({
             client_id: uuidv4(),
-            name: name,
-            mobile_no: mobile_no,
-            email: email,
-            assessment: assessment
+            ...req.body
         });
         await client.save();
         let response = { ...defaultResponseObject };
@@ -58,8 +68,20 @@ const create = async (req, res) => {
 }
 
 const update = async (req, res) => {
-    console.log(req);
-    res.json({ success: true });
+    try {
+        console.log(req.body);
+        const result = await Client.updateOne({ client_id: req.body.client_id }, req.body, { upsert: true })
+        let response = { ...defaultResponseObject };
+        response.message = "Client updated successfully";
+        response.data = { ...result };
+        res.status(200).send(response);
+    } catch (e) {
+        console.log(e);
+        let response = { ...defaultResponseObject };
+        response.error = e.message || e;
+        response.success = false;
+        res.status(400).send(response);
+    }
 }
 
 const deleteClient = async (req, res) => {

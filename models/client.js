@@ -6,7 +6,7 @@ const OTAssessments = require("./ot-assessments");
 const schema = new mongoose.Schema(
     {
         client_id: {
-            type: String,
+            type: mongoose.Schema.Types.String,
             trim: true,
             unique: true,
             required: true,
@@ -88,9 +88,8 @@ const schema = new mongoose.Schema(
             default: "",
         },
         assessment: {
-            type: String,
-            default: "BT",
-            enum: ["BT", "ST", "OT"],
+            type: Array,
+            default: [],
         },
         chief_complaints: {
             type: mongoose.Schema.Types.Array,
@@ -127,13 +126,13 @@ schema.statics.create = async ({
     return await client.save();
 };
 
-schema.statics.findOne = async (client_id) => {
-    return await Client.findOne({ client_id: client_id });
-};
+// schema.statics.findOne = async (client_id) => {
+//     return await Client.findOne({ client_id: client_id });
+// };
 
-schema.statics.updateOne = async (client_id, values) => {
-    return await Client.updateOne({ client_id: client_id }, { ...values });
-};
+// schema.statics.updateOne = async (client_id, values) => {
+//     return await Client.updateOne({ client_id: client_id }, { ...values });
+// };
 
 schema.statics.getAll = async (req) => {
     return await Client.find({})

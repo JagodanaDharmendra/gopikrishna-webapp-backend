@@ -9,8 +9,8 @@ async function sendMail(to, fileName) {
     const msg = {
         from: process.env.MAIL_FROM,
         to: to,
-        subject: 'Report',
-        text: 'and easy to do anywhere, even with Node.js',
+        subject: 'Assessment Report',
+        text: 'Find your report data in PDF',
         attachments: [
             {
                 content: attachment,

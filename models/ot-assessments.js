@@ -41,6 +41,10 @@ const schema = new mongoose.Schema(
             type: mongoose.Schema.Types.String,
             default: "",
         },
+        email_sent: {
+            type: mongoose.Schema.Types.Boolean,
+            default: false,
+        },
         draft: {
             type: mongoose.Schema.Types.Boolean,
             default: true,

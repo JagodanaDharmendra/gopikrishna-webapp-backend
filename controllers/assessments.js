@@ -216,38 +216,63 @@ const email = async (req, res) => {
         let filter = "";
         switch (assessmentType) {
             case "BT":
-                filter = "assessmentType assessment_date behavior_observation created_by created_on development_history family_history impression prenatal_history recommendations school_history test_results tests_administered therapist";
+                filter = "email_sent assessmentType assessment_date behavior_observation created_by created_on development_history family_history impression prenatal_history recommendations school_history test_results tests_administered therapist";
                 assessmentResult = await BTAssessments.find(query, filter).lean();
                 break;
 
             case "ST":
-                filter = "assessment_date attention_level attention_to_sound daddling environmental_sounds expressive_lang eye_contact family_history first_word hearing initiate_interaction limitation_to_body_movements limitation_to_speech main_mode_comm motor_developments oro_peripheral_mechanism provisional_diagnosis receptive_lang recommendations reels_el_score reels_rl_score response_to_name_call social_smile test_administered therapist vegetative_skills vision";
+                filter = "email_sent assessment_date attention_level attention_to_sound daddling environmental_sounds expressive_lang eye_contact family_history first_word hearing initiate_interaction limitation_to_body_movements limitation_to_speech main_mode_comm motor_developments oro_peripheral_mechanism provisional_diagnosis receptive_lang recommendations reels_el_score reels_rl_score response_to_name_call social_smile test_administered therapist vegetative_skills vision";
                 assessmentResult = await STAssessments.find(query, filter).lean();
                 break;
 
             case "OT":
-                filter = "assessment_date behavior_cognition cognitive_skills kinaesthesia milestone_development presenting_complaints therapist";
+                filter = "email_sent assessment_date behavior_cognition cognitive_skills kinaesthesia milestone_development presenting_complaints therapist";
                 assessmentResult = await OTAssessments.find(query, filter).lean();
                 break;
         }
 
-        //generate pdf;
-        const finalFilePath = createPDF("Hello", clientInfo, "Assessments", assessmentResult[0], fileName);
-        await sleep(1000);
+        console.log(assessmentResult);
 
-        // send email
-        const resultSendMail = await sendMail(toEmail, finalFilePath);
-        let response = { ...defaultResponseObject };
-        response.message = "Data fetched successfully";
-        response.data = resultSendMail.toString();
-        res.status(200).send(response);
+        if (assessmentResult.email_sent) {
+            let response = { ...defaultResponseObject };
+            response.message = "Email already sent";
+            response.data = null;
+            res.status(200).send(response);
+        } else {
+            //generate pdf;
+            const finalFilePath = createPDF("Hello", clientInfo, "Assessments", assessmentResult[0], fileName);
+            await sleep(1000);
 
+            // send email
+            const resultSendMail = await sendMail(toEmail, finalFilePath);
+            const resultUpdateSentMail = await updateSentEmail(client_id, assessmentType);
+            let response = { ...defaultResponseObject };
+            response.message = "Data fetched successfully";
+            response.data = { resultSendMail, resultUpdateSentMail };
+            res.status(200).send(response);
+        }
     } catch (e) {
         console.log(e);
         let response = { ...defaultResponseObject };
         response.error = e.message || e;
         response.success = false;
         res.status(400).send(response);
+    }
+}
+
+async function updateSentEmail(client_id, assessmentType) {
+    let query = { client_id: client_id };
+    let updated_values = { email_sent: true, draft: false };
+
+    switch (assessmentType) {
+        case "BT":
+            return await BTAssessments.updateOne(query, updated_values);
+
+        case "ST":
+            return await STAssessments.updateOne(query, updated_values);
+
+        case "OT":
+            return await OTAssessments.updateOne(query, updated_values);
     }
 }
 

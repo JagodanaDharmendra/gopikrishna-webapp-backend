@@ -22,6 +22,11 @@ app.use(cookieParser());
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(function (req, res, next) {
+  req.body.UserId = req.header("UserId");
+  next();
+});
+
 app.use('/', routes);
 
 // catch 404 and forward to error handler

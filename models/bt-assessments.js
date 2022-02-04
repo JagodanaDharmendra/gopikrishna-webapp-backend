@@ -18,7 +18,7 @@ const schema = new mongoose.Schema(
             default: "",
         },
         assessment_date: {
-            type: mongoose.Schema.Types.Date,
+            type: mongoose.Schema.Types.String,
             default: "",
         },
         prenatal_history: {
@@ -58,16 +58,16 @@ const schema = new mongoose.Schema(
             default: "",
         },
         created_on: {
-            type: mongoose.Schema.Types.Date,
-            default: null
+            type: mongoose.Schema.Types.String,
+            default: "",
         },
         created_by: {
             type: mongoose.Schema.Types.String,
             default: "",
         },
         modified_on: {
-            type: mongoose.Schema.Types.Date,
-            default: null
+            type: mongoose.Schema.Types.String,
+            default: ""
         },
         modified_by: {
             type: mongoose.Schema.Types.String,

@@ -13,130 +13,105 @@ const schema = new mongoose.Schema(
             dropDups: true
         },
         mobile_no: {
-            type: String,
+            type: mongoose.Schema.Types.String,
             trim: true,
             unique: true,
             required: true,
             dropDups: true
         },
         name: {
-            type: String,
+            type: mongoose.Schema.Types.String,
             default: "",
         },
         gender: {
-            type: String,
+            type: mongoose.Schema.Types.String,
             default: "male",
             enum: ["male", "female", "other"],
         },
         dob: {
-            type: mongoose.Schema.Types.Date,
+            type: mongoose.Schema.Types.String,
             default: ""
         },
         alt_mobile_no: {
-            type: String,
+            type: mongoose.Schema.Types.String,
             default: "",
         },
         email: {
-            type: String,
+            type: mongoose.Schema.Types.String,
             trim: true,
             unique: true,
             required: true,
             dropDups: true
         },
         address: {
-            type: String,
+            type: mongoose.Schema.Types.String,
             default: "",
         },
         mother_tongue: {
-            type: String,
+            type: mongoose.Schema.Types.String,
             default: "",
         },
         f_name: {
-            type: String,
+            type: mongoose.Schema.Types.String,
             default: "",
         },
         m_name: {
-            type: String,
+            type: mongoose.Schema.Types.String,
             default: "",
         },
         discontinued: {
-            type: String,
+            type: mongoose.Schema.Types.String,
             default: "",
         },
         discontinued_on: {
-            type: String,
+            type: mongoose.Schema.Types.String,
             default: "",
         },
         created_on: {
-            type: mongoose.Schema.Types.Date,
+            type: mongoose.Schema.Types.String,
             default: ""
         },
         created_by: {
-            type: String,
+            type: mongoose.Schema.Types.String,
             default: "",
         },
         modified_on: {
-            type: mongoose.Schema.Types.Date,
+            type: mongoose.Schema.Types.String,
             default: ""
         },
         modified_by: {
-            type: String,
+            type: mongoose.Schema.Types.String,
             default: "",
         },
         branch: {
-            type: String,
+            type: mongoose.Schema.Types.String,
             default: "",
         },
         assessment: {
-            type: Array,
+            type: mongoose.Schema.Types.Array,
             default: [],
         },
         chief_complaints: {
-            type: mongoose.Schema.Types.Array,
-            default: []
+            type: mongoose.Schema.Types.String,
+            default: ""
         },
         diagnosis: {
-            type: String,
+            type: mongoose.Schema.Types.String,
             default: "",
         },
         slot_time: {
-            type: mongoose.Schema.Types.Array,
-            default: []
+            type: mongoose.Schema.Types.String,
+            default: ""
         },
         therapy: {
-            type: String,
-            default: "BT",
-            enum: ["BT", "ST", "OT", "PT", "SE"],
+            type: mongoose.Schema.Types.Array,
+            default: [],
         },
     },
 );
 
-schema.statics.create = async ({
-    mobile_no,
-    name,
-    gender,
-    assessment
-}) => {
-    const client = new Client({
-        name,
-        mobile_no,
-        gender,
-        assessment
-    });
-    return await client.save();
-};
-
-// schema.statics.findOne = async (client_id) => {
-//     return await Client.findOne({ client_id: client_id });
-// };
-
-// schema.statics.updateOne = async (client_id, values) => {
-//     return await Client.updateOne({ client_id: client_id }, { ...values });
-// };
-
 schema.statics.getAll = async (req) => {
     return await Client.find({})
-        // .populate("user_id")
         .sort({ created_at: -1 })
         .skip(parseInt(req.query.skip || 0))
         .limit(parseInt(req.query.limit || 10))

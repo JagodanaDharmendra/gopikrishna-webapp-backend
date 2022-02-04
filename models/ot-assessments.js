@@ -18,7 +18,7 @@ const schema = new mongoose.Schema(
             default: "",
         },
         assessment_date: {
-            type: mongoose.Schema.Types.Date,
+            type: mongoose.Schema.Types.String,
             default: "",
         },
         presenting_complaints: {

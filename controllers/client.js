@@ -48,9 +48,12 @@ const findAll = async (req, res) => {
 
 const create = async (req, res) => {
     try {
-        console.log(req.body);
         const client = new Client({
             client_id: uuidv4(),
+            created_on: new Date().toISOString(),
+            created_by: req.body.UserId,
+            modified_on: new Date().toISOString(),
+            modified_by: req.body.UserId,
             ...req.body
         });
         await client.save();
@@ -69,8 +72,17 @@ const create = async (req, res) => {
 
 const update = async (req, res) => {
     try {
-        console.log(req.body);
-        const result = await Client.updateOne({ client_id: req.body.client_id }, req.body, { upsert: true })
+        console.log(req);
+        const updatedBody = {
+            created_on: new Date().toISOString(),
+            created_by: req.body.UserId,
+            ...req.body,
+            modified_on: new Date().toISOString(),
+            modified_by: req.body.UserId,
+        }
+        console.log(updatedBody);
+        const result = await Client.updateOne(
+            { client_id: req.body.client_id }, updatedBody, { upsert: true })
         let response = { ...defaultResponseObject };
         response.message = "Client updated successfully";
         response.data = { ...result };

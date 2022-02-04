@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
-const validator = require("validator");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
 const { config } = require("../config");
 
 const schema = new mongoose.Schema({
@@ -32,21 +30,11 @@ schema.methods.toJSON = function () {
     const user = this;
     const userObject = user.toObject();
 
-    delete userObject.pwd;
     delete userObject.tokens;
     delete userObject._id;
 
     return userObject;
 };
-
-// Hash the plain text password before saving
-schema.pre("save", async function (next) {
-    const user = this;
-    if (user.isModified("pwd")) {
-        user.pwd = await bcrypt.hash(user.pwd, 8);
-    }
-    next();
-});
 
 schema.methods.generateAuthToken = async function () {
     const user = this;
@@ -68,7 +56,7 @@ schema.statics.findByCredentials = async (userName, pwd) => {
         throw new Error("There is no user with given name");
     }
 
-    const isMatch = await bcrypt.compare(pwd, user.pwd);
+    const isMatch = pwd === user.pwd;
 
     if (!isMatch) {
         throw new Error("Invalid Credentials");

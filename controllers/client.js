@@ -1,5 +1,5 @@
-const { Client } = require("../models/client");
 const { v4: uuidv4 } = require('uuid');
+const { Client, BTAssessments, STAssessments, OTAssessments } = require("../models");
 
 const defaultResponseObject = {
     success: true,
@@ -48,15 +48,44 @@ const findAll = async (req, res) => {
 
 const create = async (req, res) => {
     try {
+        const client_id = uuidv4();
+        const userId = req.body.UserId;
+        const currentTime = new Date().toISOString();
         const client = new Client({
-            client_id: uuidv4(),
-            created_on: new Date().toISOString(),
-            created_by: req.body.UserId,
-            modified_on: new Date().toISOString(),
-            modified_by: req.body.UserId,
+            client_id: client_id,
+            created_on: currentTime,
+            created_by: userId,
+            modified_on: currentTime,
+            modified_by: userId,
             ...req.body
         });
         await client.save();
+
+        {//create assessments
+            (await new BTAssessments({
+                client_id: client_id,
+                created_on: currentTime,
+                created_by: userId,
+                modified_on: currentTime,
+                modified_by: userId,
+            })).save();
+
+            (await new STAssessments({
+                client_id: client_id,
+                created_on: currentTime,
+                created_by: userId,
+                modified_on: currentTime,
+                modified_by: userId,
+            })).save();
+
+            (await new OTAssessments({
+                client_id: client_id,
+                created_on: currentTime,
+                created_by: userId,
+                modified_on: currentTime,
+                modified_by: userId,
+            })).save();
+        }
         let response = { ...defaultResponseObject };
         response.message = "Client created successfully";
         response.data = null;

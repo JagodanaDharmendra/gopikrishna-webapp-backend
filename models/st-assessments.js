@@ -121,6 +121,22 @@ const schema = new mongoose.Schema(
             type: mongoose.Schema.Types.String,
             default: "",
         },
+        created_on: {
+            type: mongoose.Schema.Types.String,
+            default: "",
+        },
+        created_by: {
+            type: mongoose.Schema.Types.String,
+            default: "",
+        },
+        modified_on: {
+            type: mongoose.Schema.Types.String,
+            default: ""
+        },
+        modified_by: {
+            type: mongoose.Schema.Types.String,
+            default: "",
+        },
         email_sent: {
             type: mongoose.Schema.Types.Boolean,
             default: false,

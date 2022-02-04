@@ -1,11 +1,7 @@
 const { sendMail } = require("../helpers/sendgrid-mail");
 
-const { BTAssessments } = require("../models/bt-assessments");
-const { STAssessments } = require("../models/st-assessments");
-const { OTAssessments } = require("../models/ot-assessments");
-const { Client } = require("../models/client");
+const { BTAssessments, STAssessments, OTAssessments, Client } = require("../models");
 
-const { v4: uuidv4 } = require('uuid');
 const { createPDF } = require("./createPDF");
 
 function sleep(time) {
@@ -24,20 +20,24 @@ const create = async (req, res) => {
         console.log(req.body);
         const { client_id, assessmentType, values } = req.body;
         let assessmentResult;
-        const newValues = { ...values, /*client_id: client_id */ };
+        const newValues = {
+            created_on: new Date().toISOString(),
+            created_by: req.body.UserId,
+            ...values,
+            modified_on: new Date().toISOString(),
+            modified_by: req.body.UserId,
+        };
+
         switch (assessmentType) {
             case "BT":
-                // assessment = new BTAssessments(newValues);
                 assessmentResult = await BTAssessments.updateOne({ client_id: client_id }, newValues, { upsert: true });
                 break;
 
             case "ST":
-                // assessment = new STAssessments(newValues);
                 assessmentResult = await STAssessments.updateOne({ client_id: client_id }, newValues, { upsert: true });
                 break;
 
             case "OT":
-                // assessment = new OTAssessments(newValues);
                 assessmentResult = await OTAssessments.updateOne({ client_id: client_id }, newValues, { upsert: true });
                 break;
         }
@@ -262,7 +262,12 @@ const email = async (req, res) => {
 
 async function updateSentEmail(client_id, assessmentType) {
     let query = { client_id: client_id };
-    let updated_values = { email_sent: true, draft: false };
+    let updated_values = {
+        email_sent: true,
+        draft: false,
+        modified_on: new Date().toISOString(),
+        modified_by: req.body.UserId,
+    };
 
     switch (assessmentType) {
         case "BT":

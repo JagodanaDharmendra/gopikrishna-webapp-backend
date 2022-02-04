@@ -5,9 +5,9 @@ const STAssessments = require("./st-assessments");
 const OTAssessments = require("./ot-assessments");
 
 module.exports = {
-    User,
-    Client,
-    BTAssessments,
-    STAssessments,
-    OTAssessments
+    User: User.User,
+    Client: Client.Client,
+    BTAssessments: BTAssessments.BTAssessments,
+    STAssessments: STAssessments.STAssessments,
+    OTAssessments: OTAssessments.OTAssessments
 }

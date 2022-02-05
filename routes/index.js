@@ -25,7 +25,7 @@ router.get('/client/findAll', Client.findAll);
 router.post('/assessment/create', Assessments.create);
 router.post('/assessment/edit', Assessments.update);
 router.get('/assessment/findAll', Assessments.findAll);
-router.get('/assessment/findAllForClient', Assessments.findAllForClient);
+router.get('/assessment/findForClient', Assessments.findForClient);
 router.get('/assessment/findAsPDF', Assessments.findAsPDF);
 router.post('/assessment/email', Assessments.email);
 

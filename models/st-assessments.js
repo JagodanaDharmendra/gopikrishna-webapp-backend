@@ -8,10 +8,7 @@ const schema = new mongoose.Schema(
         },
         client_id: {
             type: mongoose.Schema.Types.String,
-            trim: true,
-            unique: true,
-            required: true,
-            dropDups: true
+            default: "",
         },
         therapist: {
             type: mongoose.Schema.Types.String,
@@ -151,15 +148,6 @@ const schema = new mongoose.Schema(
         },
     },
 );
-
-schema.statics.create = async ({
-    name,
-}) => {
-    const assessment = new STAssessments({
-        name,
-    });
-    return await assessment.save();
-};
 
 const STAssessments = mongoose.model("st-assessments", schema);
 

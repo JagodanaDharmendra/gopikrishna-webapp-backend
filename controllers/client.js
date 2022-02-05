@@ -61,31 +61,6 @@ const create = async (req, res) => {
         });
         await client.save();
 
-        {//create assessments
-            (await new BTAssessments({
-                client_id: client_id,
-                created_on: currentTime,
-                created_by: userId,
-                modified_on: currentTime,
-                modified_by: userId,
-            })).save();
-
-            (await new STAssessments({
-                client_id: client_id,
-                created_on: currentTime,
-                created_by: userId,
-                modified_on: currentTime,
-                modified_by: userId,
-            })).save();
-
-            (await new OTAssessments({
-                client_id: client_id,
-                created_on: currentTime,
-                created_by: userId,
-                modified_on: currentTime,
-                modified_by: userId,
-            })).save();
-        }
         let response = { ...defaultResponseObject };
         response.message = "Client created successfully";
         response.data = null;

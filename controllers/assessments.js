@@ -109,28 +109,26 @@ const findAsPDF = async (req, res) => {
 
 const findAll = async (req, res) => {
     try {
-        console.log(req.query);
         const { assessmentType } = req.query;
         let assessmentResult = [];
 
         switch (assessmentType) {
             case "BT":
-                assessmentResult = await BTAssessments.find({});
+                assessmentResult.push(...(await BTAssessments.find({})));
                 break;
 
             case "ST":
-                assessmentResult = await STAssessments.find({});
+                assessmentResult.push(...(await STAssessments.find({})));
                 break;
 
             case "OT":
-                assessmentResult = await OTAssessments.find({});
+                assessmentResult.push(...(await OTAssessments.find({})));
                 break;
 
             default:
-                assessmentResult.push(...await BTAssessments.find({}));
-                assessmentResult.push(...await STAssessments.find({}));
-                assessmentResult.push(...await OTAssessments.find({}));
-                console.log(assessmentResult);
+                assessmentResult.push(...(await BTAssessments.find({})));
+                assessmentResult.push(...(await STAssessments.find({})));
+                assessmentResult.push(...(await OTAssessments.find({})));
                 break;
         }
 

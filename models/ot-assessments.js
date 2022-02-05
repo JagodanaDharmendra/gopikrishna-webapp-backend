@@ -61,6 +61,10 @@ const schema = new mongoose.Schema(
             type: mongoose.Schema.Types.Boolean,
             default: false,
         },
+        version: {
+            type: mongoose.Schema.Types.Number,
+            default: 0,
+        },
         draft: {
             type: mongoose.Schema.Types.Boolean,
             default: true,

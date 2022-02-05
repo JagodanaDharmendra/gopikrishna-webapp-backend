@@ -107,6 +107,18 @@ const schema = new mongoose.Schema(
             type: mongoose.Schema.Types.Array,
             default: [],
         },
+        bt: {
+            type: mongoose.Schema.Types.Number,
+            default: -1
+        },
+        st: {
+            type: mongoose.Schema.Types.Number,
+            default: -1
+        },
+        ot: {
+            type: mongoose.Schema.Types.Number,
+            default: -1
+        },
     },
 );
 

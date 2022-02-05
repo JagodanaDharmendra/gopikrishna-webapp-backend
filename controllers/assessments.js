@@ -18,34 +18,47 @@ const defaultResponseObject = {
 const create = async (req, res) => {
     try {
         console.log(req.body);
-        const { client_id, assessmentType, values } = req.body;
-        let assessmentResult;
+        const { client_id, assessmentType, version } = req.body;
         const newValues = {
+            ...req.body,
             created_on: new Date().toISOString(),
             created_by: req.body.UserId,
-            ...values,
             modified_on: new Date().toISOString(),
             modified_by: req.body.UserId,
         };
 
+        let assessment;
+
         switch (assessmentType) {
             case "BT":
-                assessmentResult = await BTAssessments.updateOne({ client_id: client_id }, newValues, { upsert: true });
+                assessment = new BTAssessments({ ...newValues });
                 break;
 
             case "ST":
-                assessmentResult = await STAssessments.updateOne({ client_id: client_id }, newValues, { upsert: true });
+                assessment = new STAssessments({ ...newValues });
                 break;
 
             case "OT":
-                assessmentResult = await OTAssessments.updateOne({ client_id: client_id }, newValues, { upsert: true });
+                assessment = new OTAssessments({ ...newValues });
                 break;
+
+            default:
+                throw Error("Specify assessment type in body");
+
         }
+
+        await assessment.save();
+
+        await Client.updateOne({ client_id: client_id }, {
+            [assessmentType.trim().toLowerCase()]: version,
+            modified_on: new Date().toISOString(),
+            modified_by: req.body.UserId,
+        });
 
         // await assessment.save();
         let response = { ...defaultResponseObject };
         response.message = "Assessment created successfully";
-        response.data = { ...assessmentResult };
+        response.data = { ...assessment };
         res.status(200).send(response);
     } catch (e) {
         console.log(e);
@@ -145,14 +158,13 @@ const findAll = async (req, res) => {
     }
 }
 
-
-const findAllForClient = async (req, res) => {
+const findForClient = async (req, res) => {
     try {
         console.log(req.query);
-        const { assessmentType, client_id } = req.query;
+        const { assessmentType, client_id, version } = req.query;
         let assessmentResult = [];
 
-        let query = { client_id: client_id };
+        let query = { client_id: client_id, version: version };
 
         switch (assessmentType) {
             case "BT":
@@ -243,7 +255,7 @@ const email = async (req, res) => {
 
             // send email
             const resultSendMail = await sendMail(toEmail, finalFilePath);
-            const resultUpdateSentMail = await updateSentEmail(client_id, assessmentType);
+            const resultUpdateSentMail = await updateSentEmail(req, client_id, assessmentType);
             let response = { ...defaultResponseObject };
             response.message = "Data fetched successfully";
             response.data = { resultSendMail, resultUpdateSentMail };
@@ -258,7 +270,7 @@ const email = async (req, res) => {
     }
 }
 
-async function updateSentEmail(client_id, assessmentType) {
+async function updateSentEmail(req, client_id, assessmentType) {
     let query = { client_id: client_id };
     let updated_values = {
         email_sent: true,
@@ -283,7 +295,7 @@ module.exports = {
     create,
     findAsPDF,
     findAll,
-    findAllForClient,
+    findForClient,
     update,
     email
 }

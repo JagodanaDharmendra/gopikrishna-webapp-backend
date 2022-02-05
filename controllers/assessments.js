@@ -200,10 +200,48 @@ const findForClient = async (req, res) => {
     }
 }
 
-
 const update = async (req, res) => {
-    console.log(req);
-    res.json({ success: true });
+    try {
+        const { client_id, assessmentType, version } = req.body;
+        const updated_values = {
+            ...req.body,
+            modified_on: new Date().toISOString(),
+            modified_by: req.body.UserId,
+        };
+
+        let assessment;
+        const query = { client_id, version };
+
+        switch (assessmentType) {
+            case "BT":
+                assessment = await BTAssessments.updateOne(query, updated_values);
+                break;
+
+            case "ST":
+                assessment = await STAssessments.updateOne(query, updated_values);
+                break;
+
+            case "OT":
+                assessment = await OTAssessments.updateOne(query, updated_values);
+                break;
+
+            default:
+                throw Error("Specify assessment type in body");
+
+        }
+
+        // await assessment.save();
+        let response = { ...defaultResponseObject };
+        response.message = "Assessment created successfully";
+        response.data = { ...assessment };
+        res.status(200).send(response);
+    } catch (e) {
+        console.log(e);
+        let response = { ...defaultResponseObject };
+        response.error = e.message || e;
+        response.success = false;
+        res.status(400).send(response);
+    }
 }
 
 const email = async (req, res) => {

@@ -3,7 +3,6 @@ const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 async function sendMail(to, fileName) {
-    console.log(fileName);
     const attachment = fs.readFileSync(fileName).toString("base64");
 
     const msg = {

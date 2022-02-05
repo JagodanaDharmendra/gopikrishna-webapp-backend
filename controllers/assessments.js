@@ -72,7 +72,7 @@ const create = async (req, res) => {
 const findAsPDF = async (req, res) => {
     try {
         //find client email
-        const { client_id, assessmentType } = req.query;
+        const { client_id, assessmentType, version } = req.query;
         const result = await Client.find({ client_id: client_id }, "mobile_no name gender address email created_on created_by assessment chief_complaints diagnosis therapy").lean();
         if (!result || result.length == 0) {
             throw Error("No Client found for given client id:" + client_id);
@@ -83,7 +83,7 @@ const findAsPDF = async (req, res) => {
 
         //find assessment data
         let assessmentResult = [];
-        let query = { client_id: client_id };
+        let query = { client_id, version };
         let filter = "";
         switch (assessmentType) {
             case "BT":
@@ -164,7 +164,7 @@ const findForClient = async (req, res) => {
         const { assessmentType, client_id, version } = req.query;
         let assessmentResult = [];
 
-        let query = { client_id: client_id, version: version };
+        let query = { client_id, version };
 
         switch (assessmentType) {
             case "BT":
@@ -246,9 +246,8 @@ const update = async (req, res) => {
 
 const email = async (req, res) => {
     try {
-
         //find client email
-        const { client_id, assessmentType } = req.body;
+        const { client_id, assessmentType, version } = req.body;
         const result = await Client.find({ client_id: client_id }, "mobile_no name gender address email created_on created_by assessment chief_complaints diagnosis therapy").lean();
         if (!result || result.length == 0) {
             throw Error("No Client found for given client id:" + client_id);
@@ -260,7 +259,7 @@ const email = async (req, res) => {
 
         //find assessment data
         let assessmentResult = [];
-        let query = { client_id: client_id };
+        let query = { client_id, version };
         let filter = "";
         switch (assessmentType) {
             case "BT":
@@ -279,9 +278,7 @@ const email = async (req, res) => {
                 break;
         }
 
-        console.log(assessmentResult);
-
-        if (assessmentResult.email_sent) {
+        if (assessmentResult[0].email_sent) {
             let response = { ...defaultResponseObject };
             response.message = "Email already sent";
             response.data = null;
@@ -293,7 +290,7 @@ const email = async (req, res) => {
 
             // send email
             const resultSendMail = await sendMail(toEmail, finalFilePath);
-            const resultUpdateSentMail = await updateSentEmail(req, client_id, assessmentType);
+            const resultUpdateSentMail = await updateSentEmail(req, client_id, assessmentType, version);
             let response = { ...defaultResponseObject };
             response.message = "Data fetched successfully";
             response.data = { resultSendMail, resultUpdateSentMail };
@@ -308,8 +305,8 @@ const email = async (req, res) => {
     }
 }
 
-async function updateSentEmail(req, client_id, assessmentType) {
-    let query = { client_id: client_id };
+async function updateSentEmail(req, client_id, assessmentType, version) {
+    let query = { client_id, version };
     let updated_values = {
         email_sent: true,
         draft: false,

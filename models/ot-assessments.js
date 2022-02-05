@@ -8,17 +8,14 @@ const schema = new mongoose.Schema(
         },
         client_id: {
             type: mongoose.Schema.Types.String,
-            trim: true,
-            unique: true,
-            required: true,
-            dropDups: true
+            default: "",
         },
         therapist: {
             type: mongoose.Schema.Types.String,
             default: "",
         },
         assessment_date: {
-            type: mongoose.Schema.Types.Date,
+            type: mongoose.Schema.Types.String,
             default: "",
         },
         presenting_complaints: {
@@ -41,9 +38,29 @@ const schema = new mongoose.Schema(
             type: mongoose.Schema.Types.String,
             default: "",
         },
+        created_on: {
+            type: mongoose.Schema.Types.String,
+            default: "",
+        },
+        created_by: {
+            type: mongoose.Schema.Types.String,
+            default: "",
+        },
+        modified_on: {
+            type: mongoose.Schema.Types.String,
+            default: ""
+        },
+        modified_by: {
+            type: mongoose.Schema.Types.String,
+            default: "",
+        },
         email_sent: {
             type: mongoose.Schema.Types.Boolean,
             default: false,
+        },
+        version: {
+            type: mongoose.Schema.Types.Number,
+            default: 0,
         },
         draft: {
             type: mongoose.Schema.Types.Boolean,
@@ -51,15 +68,6 @@ const schema = new mongoose.Schema(
         },
     },
 );
-
-schema.statics.create = async ({
-    name,
-}) => {
-    const assessment = new OTAssessments({
-        name,
-    });
-    return await assessment.save();
-};
 
 const OTAssessments = mongoose.model("ot-assessments", schema);
 

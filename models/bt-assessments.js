@@ -8,17 +8,14 @@ const schema = new mongoose.Schema(
         },
         client_id: {
             type: mongoose.Schema.Types.String,
-            trim: true,
-            unique: true,
-            required: true,
-            dropDups: true
+            default: "",
         },
         therapist: {
             type: mongoose.Schema.Types.String,
             default: "",
         },
         assessment_date: {
-            type: mongoose.Schema.Types.Date,
+            type: mongoose.Schema.Types.String,
             default: "",
         },
         prenatal_history: {
@@ -58,16 +55,16 @@ const schema = new mongoose.Schema(
             default: "",
         },
         created_on: {
-            type: mongoose.Schema.Types.Date,
-            default: null
+            type: mongoose.Schema.Types.String,
+            default: "",
         },
         created_by: {
             type: mongoose.Schema.Types.String,
             default: "",
         },
         modified_on: {
-            type: mongoose.Schema.Types.Date,
-            default: null
+            type: mongoose.Schema.Types.String,
+            default: ""
         },
         modified_by: {
             type: mongoose.Schema.Types.String,
@@ -87,15 +84,6 @@ const schema = new mongoose.Schema(
         },
     },
 );
-
-schema.statics.create = async ({
-    name,
-}) => {
-    const assessment = new BTAssessments({
-        name,
-    });
-    return await assessment.save();
-};
 
 const BTAssessments = mongoose.model("bt-assessments", schema);
 

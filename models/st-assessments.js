@@ -8,122 +8,139 @@ const schema = new mongoose.Schema(
         },
         client_id: {
             type: mongoose.Schema.Types.String,
-            trim: true,
-            unique: true,
-            required: true,
-            dropDups: true
+            default: "",
         },
         therapist: {
             type: mongoose.Schema.Types.String,
             default: "",
         },
         assessment_date: {
-            type: mongoose.Schema.Types.Date,
-            default: null,
+            type: mongoose.Schema.Types.String,
+            default: "",
         },
         daddling: {
             type: mongoose.Schema.Types.String,
-            default: null,
+            default: "",
         },
         first_word: {
             type: mongoose.Schema.Types.String,
-            default: null,
+            default: "",
         },
         main_mode_comm: {
             type: mongoose.Schema.Types.String,
-            default: null,
+            default: "",
         },
         family_history: {
             type: mongoose.Schema.Types.String,
-            default: null,
+            default: "",
         },
         motor_developments: {
             type: mongoose.Schema.Types.String,
-            default: null,
+            default: "",
         },
         oro_peripheral_mechanism: {
             type: mongoose.Schema.Types.String,
-            default: null,
+            default: "",
         },
         vegetative_skills: {
             type: mongoose.Schema.Types.String,
-            default: null,
+            default: "",
         },
         vision: {
             type: mongoose.Schema.Types.String,
-            default: null,
+            default: "",
         },
         hearing: {
             type: mongoose.Schema.Types.String,
-            default: null,
+            default: "",
         },
         response_to_name_call: {
             type: mongoose.Schema.Types.String,
-            default: null,
+            default: "",
         },
         environmental_sounds: {
             type: mongoose.Schema.Types.String,
-            default: null,
+            default: "",
         },
         eye_contact: {
             type: mongoose.Schema.Types.String,
-            default: null,
+            default: "",
         },
         attention_to_sound: {
             type: mongoose.Schema.Types.String,
-            default: null,
+            default: "",
         },
         limitation_to_body_movements: {
             type: mongoose.Schema.Types.String,
-            default: null,
+            default: "",
         },
         limitation_to_speech: {
             type: mongoose.Schema.Types.String,
-            default: null,
+            default: "",
         },
         attention_level: {
             type: mongoose.Schema.Types.String,
-            default: null,
+            default: "",
         },
         social_smile: {
             type: mongoose.Schema.Types.String,
-            default: null,
+            default: "",
         },
         initiate_interaction: {
             type: mongoose.Schema.Types.String,
-            default: null,
+            default: "",
         },
         receptive_lang: {
             type: mongoose.Schema.Types.String,
-            default: null,
+            default: "",
         },
         expressive_lang: {
             type: mongoose.Schema.Types.String,
-            default: null,
+            default: "",
         },
         test_administered: {
             type: mongoose.Schema.Types.String,
-            default: null,
+            default: "",
         },
         reels_rl_score: {
             type: mongoose.Schema.Types.String,
-            default: null,
+            default: "",
         },
         reels_el_score: {
             type: mongoose.Schema.Types.String,
-            default: null,
+            default: "",
         },
         provisional_diagnosis: {
             type: mongoose.Schema.Types.String,
-            default: null,
+            default: "",
         },
         recommendations: {
             type: mongoose.Schema.Types.String,
-            default: null,
+            default: "",
+        },
+        created_on: {
+            type: mongoose.Schema.Types.String,
+            default: "",
+        },
+        created_by: {
+            type: mongoose.Schema.Types.String,
+            default: "",
+        },
+        modified_on: {
+            type: mongoose.Schema.Types.String,
+            default: ""
+        },
+        modified_by: {
+            type: mongoose.Schema.Types.String,
+            default: "",
         },
         email_sent: {
             type: mongoose.Schema.Types.Boolean,
             default: false,
+        },
+        version: {
+            type: mongoose.Schema.Types.Number,
+            default: 0,
         },
         draft: {
             type: mongoose.Schema.Types.Boolean,
@@ -131,15 +148,6 @@ const schema = new mongoose.Schema(
         },
     },
 );
-
-schema.statics.create = async ({
-    name,
-}) => {
-    const assessment = new STAssessments({
-        name,
-    });
-    return await assessment.save();
-};
 
 const STAssessments = mongoose.model("st-assessments", schema);
 

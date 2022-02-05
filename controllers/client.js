@@ -1,5 +1,5 @@
-const { Client } = require("../models/client");
 const { v4: uuidv4 } = require('uuid');
+const { Client, BTAssessments, STAssessments, OTAssessments } = require("../models");
 
 const defaultResponseObject = {
     success: true,
@@ -48,12 +48,19 @@ const findAll = async (req, res) => {
 
 const create = async (req, res) => {
     try {
-        console.log(req.body);
+        const client_id = uuidv4();
+        const userId = req.body.UserId;
+        const currentTime = new Date().toISOString();
         const client = new Client({
-            client_id: uuidv4(),
+            client_id: client_id,
+            created_on: currentTime,
+            created_by: userId,
+            modified_on: currentTime,
+            modified_by: userId,
             ...req.body
         });
         await client.save();
+
         let response = { ...defaultResponseObject };
         response.message = "Client created successfully";
         response.data = null;
@@ -69,8 +76,17 @@ const create = async (req, res) => {
 
 const update = async (req, res) => {
     try {
-        console.log(req.body);
-        const result = await Client.updateOne({ client_id: req.body.client_id }, req.body, { upsert: true })
+        console.log(req);
+        const updatedBody = {
+            created_on: new Date().toISOString(),
+            created_by: req.body.UserId,
+            ...req.body,
+            modified_on: new Date().toISOString(),
+            modified_by: req.body.UserId,
+        }
+        console.log(updatedBody);
+        const result = await Client.updateOne(
+            { client_id: req.body.client_id }, updatedBody, { upsert: true })
         let response = { ...defaultResponseObject };
         response.message = "Client updated successfully";
         response.data = { ...result };
